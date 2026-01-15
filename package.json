@@ -5,6 +5,24 @@
   "version": "0.0.1",
   "publisher": "johnlokerse",
   "icon": "icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/johnlokerse/code-quickselect.git"
+  },
+  "bugs": {
+    "url": "https://github.com/johnlokerse/code-quickselect/issues"
+  },
+  "homepage": "https://github.com/johnlokerse/code-quickselect#readme",
+  "keywords": [
+    "vscode",
+    "extension",
+    "codelens",
+    "selection",
+    "bicep",
+    "powershell",
+    "csharp",
+    "markdown"
+  ],
   "engines": {
     "vscode": "^1.95.0"
   },
@@ -18,11 +36,19 @@
     "onLanguage:markdown"
   ],
   "main": "./dist/extension.js",
+  "files": [
+    "dist/**",
+    "icon.png",
+    "README.md",
+    "CHANGELOG.md",
+    "package.json"
+  ],
   "contributes": {
     "commands": [
       {
         "command": "codequickselect.selectBlock",
-        "title": "CodeQuickSelect: Select Code Block"
+        "title": "CodeQuickSelect: Select Code Block",
+        "category": "Code QuickSelect"
       }
     ]
   },

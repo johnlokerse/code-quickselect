@@ -1,0 +1,13 @@
+**/node_modules/**
+**/src/**
+**/out/**
+**/dist/**/*.map
+**/test/**
+**/.vscode/**
+**/.vscode-test/**
+**/.github/**
+**/*.ts
+**/*.tsx
+**/*.md
+!README.md
+!CHANGELOG.md
