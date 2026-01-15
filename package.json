@@ -1,9 +1,10 @@
 {
   "name": "codequickselect",
-  "displayName": "CodeQuickSelect",
+  "displayName": "Code QuickSelect",
   "description": "Quickly select entire code blocks with one click",
   "version": "0.0.1",
-  "publisher": "your-username",
+  "publisher": "johnlokerse",
+  "icon": "icon.png",
   "engines": {
     "vscode": "^1.95.0"
   },
