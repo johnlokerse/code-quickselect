@@ -1,0 +1,48 @@
+{
+  "name": "codequickselect",
+  "displayName": "CodeQuickSelect",
+  "description": "Quickly select entire code blocks with one click",
+  "version": "0.0.1",
+  "publisher": "your-username",
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": [
+    "onLanguage:powershell",
+    "onLanguage:bicep",
+    "onLanguage:csharp"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "codequickselect.selectBlock",
+        "title": "CodeQuickSelect: Select Code Block"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run esbuild-base -- --minify",
+    "esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node",
+    "esbuild": "npm run esbuild-base -- --sourcemap",
+    "esbuild-watch": "npm run esbuild-base -- --sourcemap --watch",
+    "pretest": "npm run esbuild && npm run build-tests && npm run lint",
+    "build-tests": "tsc -p ./tsconfig.test.json",
+    "test": "node ./out/test/runTest.js",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.95.0",
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "esbuild": "^0.19.0",
+    "eslint": "^8.0.0",
+    "@types/mocha": "^10.0.1",
+    "glob": "^8.1.0",
+    "mocha": "^10.2.0",
+    "typescript": "^5.0.0",
+    "vscode-test": "^1.6.0"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./out",
+    "declaration": false,
+    "declarationMap": false
+  },
+  "include": ["src/test", "src/providers", "src/utils", "src/extension.ts"]
+}

@@ -1,0 +1,7 @@
+{
+  "eslint.validate": ["typescript"],
+  "files.exclude": {
+    "dist": true,
+    "out": true
+  }
+}
