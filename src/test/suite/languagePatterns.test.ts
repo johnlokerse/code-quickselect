@@ -2,6 +2,7 @@ import * as assert from "assert";
 import {
 	getBicepPatterns,
 	getCSharpPatterns,
+	getMarkdownPatterns,
 	getPowerShellPatterns,
 } from "../../providers/languagePatterns";
 
@@ -61,5 +62,14 @@ public class SampleClass
 				new RegExp(pattern.source, pattern.flags).test(text)
 			)
 		);
+	});
+
+	test("Markdown patterns match headers", () => {
+		const text = "## Heading Level 2";
+		const matches = getMarkdownPatterns().some((pattern) =>
+			new RegExp(pattern.source, pattern.flags).test(text)
+		);
+
+		assert.ok(matches);
 	});
 });

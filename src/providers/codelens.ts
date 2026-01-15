@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import {
 	getBicepPatterns,
 	getCSharpPatterns,
+	getMarkdownPatterns,
 	getPowerShellPatterns,
 } from "./languagePatterns";
 import { logger } from "../utils/logger";
@@ -60,6 +61,10 @@ export class QuickSelectCodeLensProvider implements vscode.CodeLensProvider {
 
 		if (languageId === "csharp") {
 			return getCSharpPatterns();
+		}
+
+		if (languageId === "markdown") {
+			return getMarkdownPatterns();
 		}
 
 		logger.info(`Unsupported language: ${languageId}`);

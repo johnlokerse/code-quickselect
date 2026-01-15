@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import { QuickSelectCodeLensProvider } from "./providers/codelens";
 import { findMatchingBrace } from "./utils/braceMatcher";
+import { findMarkdownSectionEnd } from "./utils/markdownSection";
 import { logger } from "./utils/logger";
 
 export function activate(context: vscode.ExtensionContext): void {
@@ -10,6 +11,7 @@ export function activate(context: vscode.ExtensionContext): void {
 		vscode.languages.registerCodeLensProvider("bicep", codelensProvider),
 		vscode.languages.registerCodeLensProvider("powershell", codelensProvider),
 		vscode.languages.registerCodeLensProvider("csharp", codelensProvider),
+		vscode.languages.registerCodeLensProvider("markdown", codelensProvider),
 		vscode.commands.registerCommand(
 			"codequickselect.selectBlock",
 			(document: vscode.TextDocument, lineNumber: number) =>
@@ -39,14 +41,17 @@ async function selectCodeBlock(
 	}
 
 	try {
-		const endLine = findMatchingBrace(
-			document,
-			lineNumber,
-			document.languageId
-		);
+		const endLine =
+			document.languageId === "markdown"
+				? findMarkdownSectionEnd(document, lineNumber)
+				: findMatchingBrace(document, lineNumber, document.languageId);
 
 		if (endLine === null) {
-			vscode.window.showErrorMessage("No matching closing brace found");
+			vscode.window.showErrorMessage(
+				document.languageId === "markdown"
+					? "No matching section end found"
+					: "No matching closing brace found"
+			);
 			return;
 		}
 

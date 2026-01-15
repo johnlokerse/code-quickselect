@@ -4,7 +4,7 @@ Code QuickSelect adds a quick-select CodeLens above common block declarations so
 
 ## Features
 
-- CodeLens above Bicep, PowerShell, and C# block declarations
+- CodeLens above Bicep, PowerShell, C#, and Markdown headers
 - One-click selection of the full code block
 - Handles nested braces and skips strings/comments
 
@@ -13,12 +13,13 @@ Code QuickSelect adds a quick-select CodeLens above common block declarations so
 - Bicep: resource, module, func, type
 - PowerShell: function, class, enum
 - C#: class, enum, method
+- Markdown: headers (ATX `#` style)
 
 ## Usage
 
-1. Open a `.bicep`, `.ps1`, or `.cs` file.
-2. Click the `Quick Select` CodeLens above a declaration.
-3. The full block is selected.
+1. Open a `.bicep`, `.ps1`, `.cs`, or `.md` file.
+2. Click the `Quick Select` CodeLens above a declaration or header.
+3. The full block or section is selected.
 
 ## Commands
 
