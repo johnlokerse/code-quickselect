@@ -6,11 +6,12 @@ Code QuickSelect adds a quick-select CodeLens above common block declarations so
 
 - CodeLens above Bicep, PowerShell, C#, and Markdown headers
 - One-click selection of the full code block
+- Bicep param/output selection highlights all declarations at once
 - Handles nested braces and skips strings/comments
 
 ## Supported Languages
 
-- Bicep: resource, module, func, type
+- Bicep: resource, module, func, type, param, output
 - PowerShell: function, class, enum
 - C#: class, enum, method
 - Markdown: headers (ATX `#` style)

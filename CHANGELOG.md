@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.0
+
+- Added Quick Select support for Bicep `param` and `output` declarations
+- Clicking Quick Select on a param or output selects all declarations of that kind at once
+
 ## 1.0.0
 
 - First stable release

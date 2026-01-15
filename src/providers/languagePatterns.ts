@@ -1,4 +1,8 @@
-const BICEP_PATTERNS = [/^[ \t]*(resource|module|func|type)\s+[\w-]+\b/gm];
+const BICEP_PATTERNS = [
+	/^[ \t]*(resource|module|func|type)\s+[\w-]+\b/gm,
+	/^[ \t]*param\s+\w+\b/gm,
+	/^[ \t]*output\s+\w+\b/gm,
+];
 
 const POWERSHELL_PATTERNS = [
 	/^[ \t]*function\s+[\w-]+\b/gm,

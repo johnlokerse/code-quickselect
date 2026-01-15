@@ -5,6 +5,10 @@ import {
 	getMarkdownPatterns,
 	getPowerShellPatterns,
 } from "./languagePatterns";
+import {
+	isBicepOutputLine,
+	isBicepParamLine,
+} from "../utils/bicepDeclarations";
 import { logger } from "../utils/logger";
 
 export class QuickSelectCodeLensProvider implements vscode.CodeLensProvider {
@@ -21,6 +25,14 @@ export class QuickSelectCodeLensProvider implements vscode.CodeLensProvider {
 
 		const text = document.getText();
 		const codelenses: vscode.CodeLens[] = [];
+		const firstBicepParamLine =
+			languageId === "bicep"
+				? findFirstBicepDeclarationLine(document, isBicepParamLine)
+				: null;
+		const firstBicepOutputLine =
+			languageId === "bicep"
+				? findFirstBicepDeclarationLine(document, isBicepOutputLine)
+				: null;
 
 		for (const pattern of patterns) {
 			const flags = pattern.flags.includes("g")
@@ -36,6 +48,27 @@ export class QuickSelectCodeLensProvider implements vscode.CodeLensProvider {
 
 				const position = document.positionAt(match.index);
 				const line = document.lineAt(position.line);
+
+				if (languageId === "bicep") {
+					const lineText = line.text;
+					if (isBicepParamLine(lineText)) {
+						if (firstBicepParamLine === null) {
+							continue;
+						}
+						if (position.line !== firstBicepParamLine) {
+							continue;
+						}
+					}
+
+					if (isBicepOutputLine(lineText)) {
+						if (firstBicepOutputLine === null) {
+							continue;
+						}
+						if (position.line !== firstBicepOutputLine) {
+							continue;
+						}
+					}
+				}
 
 				codelenses.push(
 					new vscode.CodeLens(line.range, {
@@ -70,4 +103,17 @@ export class QuickSelectCodeLensProvider implements vscode.CodeLensProvider {
 		logger.info(`Unsupported language: ${languageId}`);
 		return [];
 	}
+}
+
+function findFirstBicepDeclarationLine(
+	document: vscode.TextDocument,
+	matcher: (text: string) => boolean
+): number | null {
+	for (let lineNumber = 0; lineNumber < document.lineCount; lineNumber++) {
+		if (matcher(document.lineAt(lineNumber).text)) {
+			return lineNumber;
+		}
+	}
+
+	return null;
 }

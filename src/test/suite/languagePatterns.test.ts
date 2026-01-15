@@ -17,6 +17,21 @@ suite("languagePatterns", () => {
 		assert.ok(matches);
 	});
 
+	test("Bicep patterns match param and output declarations", () => {
+		const paramText = "param location string";
+		const outputText = "output storageName string = 'name'";
+		const patterns = getBicepPatterns();
+		const paramMatch = patterns.some((pattern) =>
+			new RegExp(pattern.source, pattern.flags).test(paramText)
+		);
+		const outputMatch = patterns.some((pattern) =>
+			new RegExp(pattern.source, pattern.flags).test(outputText)
+		);
+
+		assert.ok(paramMatch);
+		assert.ok(outputMatch);
+	});
+
 	test("PowerShell patterns match function declarations", () => {
 		const text = "function Get-Example {\n}";
 		const matches = getPowerShellPatterns().some((pattern) =>
