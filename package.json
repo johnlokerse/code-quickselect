@@ -2,7 +2,7 @@
   "name": "codequickselect",
   "displayName": "Code QuickSelect",
   "description": "Quickly select entire code blocks with one click",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "publisher": "johnlokerse",
   "icon": "icon.png",
   "repository": {
