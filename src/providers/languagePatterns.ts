@@ -7,9 +7,10 @@ const POWERSHELL_PATTERNS = [
 ];
 
 const CSHARP_PATTERNS = [
-	/^[ \t]*(?:public|private|protected|internal|static|sealed|abstract|partial)?[ \t]*class\s+\w+\b/gm,
-	/^[ \t]*(?:public|private|protected|internal|static|sealed|abstract|partial)?[ \t]*enum\s+\w+\b/gm,
-	/^[ \t]*(?:public|private|protected|internal|static|virtual|override|abstract|async|sealed|partial|extern|unsafe|new)?[ \t]*[\w<>[\],\]]+[ \t]+[A-Za-z_]\w*\s*\(/gm,
+	/^[ \t]*(?:(?:public|private|protected|internal|static|sealed|abstract|partial)[ \t]+)*class\s+\w+\b/gm,
+	/^[ \t]*(?:(?:public|private|protected|internal|static|sealed|abstract|partial)[ \t]+)*enum\s+\w+\b/gm,
+	// eslint-disable-next-line no-useless-escape
+	/^[ \t]*(?:(?:public|private|protected|internal|static|virtual|override|abstract|async|sealed|partial|extern|unsafe|new)[ \t]+)*[\w<>\[\],]+[ \t]+[A-Za-z_]\w*\s*\(/gm,
 ];
 
 const MARKDOWN_PATTERNS = [/^[ \t]*#{1,6}\s+.+$/gm];
