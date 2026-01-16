@@ -59,19 +59,19 @@ async function selectCodeBlock(
 				return;
 			}
 
-			const selections = ranges.map(
-				(range) =>
-					new vscode.Selection(
-						new vscode.Position(range.startLine, 0),
-						new vscode.Position(
-							range.endLine,
-							document.lineAt(range.endLine).text.length
-						)
-					)
+			// Create a single contiguous selection spanning all declarations
+			const firstRange = ranges[0];
+			const lastRange = ranges[ranges.length - 1];
+			const selection = new vscode.Selection(
+				new vscode.Position(firstRange.startLine, 0),
+				new vscode.Position(
+					lastRange.endLine,
+					document.lineAt(lastRange.endLine).text.length
+				)
 			);
 
-			editor.selections = selections;
-			editor.revealRange(selections[0], vscode.TextEditorRevealType.InCenter);
+			editor.selection = selection;
+			editor.revealRange(selection, vscode.TextEditorRevealType.InCenter);
 			return;
 		}
 	}

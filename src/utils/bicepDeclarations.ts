@@ -6,6 +6,7 @@ const DECORATOR_REGEX = /^[ \t]*@\w+/;
 const LINE_COMMENT = "//";
 const BLOCK_COMMENT_START = "/*";
 const BLOCK_COMMENT_END = "*/";
+const TRIPLE_QUOTE = "'''";
 
 function isEscaped(line: string, index: number): boolean {
 	if (index <= 0) {
@@ -40,6 +41,10 @@ function isBlockCommentEnd(line: string, index: number): boolean {
 	return line.startsWith(BLOCK_COMMENT_END, index);
 }
 
+function isTripleQuote(line: string, index: number): boolean {
+	return line.startsWith(TRIPLE_QUOTE, index);
+}
+
 export function isBicepParamLine(text: string): boolean {
 	return PARAM_REGEX.test(text);
 }
@@ -62,30 +67,82 @@ export function findBicepDeclarationRanges(
 			continue;
 		}
 
-		let startLine = lineNumber;
-		for (
-			let decoratorLine = lineNumber - 1;
-			decoratorLine >= 0;
-			decoratorLine--
-		) {
-			const decoratorText = document.lineAt(decoratorLine).text;
-			if (DECORATOR_REGEX.test(decoratorText)) {
-				startLine = decoratorLine;
-				continue;
-			}
-
-			if (decoratorText.trim().length === 0) {
-				break;
-			}
-
-			break;
-		}
-
+		const startLine = findDecoratorStart(document, lineNumber);
 		const endLine = findBicepDeclarationEnd(document, lineNumber);
 		ranges.push({ startLine, endLine });
 	}
 
 	return ranges;
+}
+
+/**
+ * Finds the start line of decorators preceding a param/output declaration.
+ * Handles multi-line decorators like @allowed([...]) by tracking bracket depth.
+ */
+function findDecoratorStart(
+	document: vscode.TextDocument,
+	declarationLine: number
+): number {
+	let startLine = declarationLine;
+	let bracketDepth = 0;
+	let parenDepth = 0;
+	let braceDepth = 0;
+	let inMultiLineDecorator = false;
+
+	for (let line = declarationLine - 1; line >= 0; line--) {
+		const lineText = document.lineAt(line).text;
+		const trimmed = lineText.trim();
+
+		// Empty line breaks the decorator chain (unless we're inside a multi-line decorator)
+		if (trimmed.length === 0) {
+			if (inMultiLineDecorator) {
+				continue;
+			}
+			break;
+		}
+
+		// Count brackets/parens/braces from right to left to track if we're inside a multi-line construct
+		for (let i = lineText.length - 1; i >= 0; i--) {
+			const char = lineText[i];
+			if (char === "]") {
+				bracketDepth++;
+			} else if (char === "[") {
+				bracketDepth--;
+			} else if (char === ")") {
+				parenDepth++;
+			} else if (char === "(") {
+				parenDepth--;
+			} else if (char === "}") {
+				braceDepth++;
+			} else if (char === "{") {
+				braceDepth--;
+			}
+		}
+
+		// Check if we're inside a multi-line decorator (unclosed brackets/parens/braces)
+		inMultiLineDecorator = bracketDepth > 0 || parenDepth > 0 || braceDepth > 0;
+
+		// If this line starts a decorator, include it
+		if (DECORATOR_REGEX.test(lineText)) {
+			startLine = line;
+			// Reset depths when we find a decorator start (we're now balanced for this decorator)
+			if (bracketDepth <= 0 && parenDepth <= 0 && braceDepth <= 0) {
+				inMultiLineDecorator = false;
+			}
+			continue;
+		}
+
+		// If we're inside a multi-line decorator, continue searching upward
+		if (inMultiLineDecorator) {
+			startLine = line;
+			continue;
+		}
+
+		// Not a decorator and not inside multi-line decorator, stop
+		break;
+	}
+
+	return startLine;
 }
 
 function findBicepDeclarationEnd(
@@ -94,6 +151,7 @@ function findBicepDeclarationEnd(
 ): number {
 	let inString = false;
 	let stringChar = "";
+	let inMultiLineString = false;
 	let inBlockComment = false;
 	let braceDepth = 0;
 	let bracketDepth = 0;
@@ -109,6 +167,15 @@ function findBicepDeclarationEnd(
 
 		for (let i = 0; i < line.length; i++) {
 			const char = line[i];
+
+			// Handle multi-line string (triple-quoted)
+			if (inMultiLineString) {
+				if (isTripleQuote(line, i)) {
+					inMultiLineString = false;
+					i += TRIPLE_QUOTE.length - 1;
+				}
+				continue;
+			}
 
 			if (inBlockComment) {
 				if (isBlockCommentEnd(line, i)) {
@@ -126,6 +193,13 @@ function findBicepDeclarationEnd(
 				if (isBlockCommentStart(line, i)) {
 					inBlockComment = true;
 					i += BLOCK_COMMENT_START.length - 1;
+					continue;
+				}
+
+				// Check for triple-quoted multi-line string start
+				if (isTripleQuote(line, i)) {
+					inMultiLineString = true;
+					i += TRIPLE_QUOTE.length - 1;
 					continue;
 				}
 			}
