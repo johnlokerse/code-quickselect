@@ -2,6 +2,9 @@
 
 Code QuickSelect adds a quick-select CodeLens above common block declarations so you can select entire blocks with one click.
 
+![Code QuickSelect in action](InAction.gif)
+
+
 ## Features
 
 - CodeLens above Bicep, PowerShell, C#, and Markdown headers
